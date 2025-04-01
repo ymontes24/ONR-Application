@@ -4,7 +4,9 @@
 CREATE TABLE associations (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    address VARCHAR(255)
+    address VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Tabla de unidades
@@ -12,7 +14,9 @@ CREATE TABLE units (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     association_id INTEGER NOT NULL,
-    FOREIGN KEY (association_id) REFERENCES associations(id)
+    FOREIGN KEY (association_id) REFERENCES associations(id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Tabla de usuarios
@@ -21,7 +25,9 @@ CREATE TABLE users (
     names VARCHAR(255) NOT NULL,
     last_names VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Tabla para relación muchos a muchos entre usuarios y unidades
@@ -32,7 +38,9 @@ CREATE TABLE user_units (
     role VARCHAR(50) NOT NULL, -- 'owner' o 'resident'
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (unit_id) REFERENCES units(id),
-    UNIQUE (user_id, unit_id)
+    UNIQUE (user_id, unit_id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Tabla para relación muchos a muchos entre usuarios y asociaciones
@@ -42,7 +50,9 @@ CREATE TABLE user_associations (
     association_id INTEGER NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (association_id) REFERENCES associations(id),
-    UNIQUE (user_id, association_id)
+    UNIQUE (user_id, association_id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Insertar datos de prueba
