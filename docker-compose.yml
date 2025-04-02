@@ -33,6 +33,20 @@ services:
     networks:
       - app-network
 
+  onrbackend: 
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: onr-backend
+    restart: always
+    depends_on:
+      - mongodb
+      - postgres
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
 networks:
   app-network:
     driver: bridge

@@ -5,6 +5,30 @@ import { bookingSchema } from '../schemas/booking.schema';
 
 export class CombinedController {
 
+  async login(req: Request, res: Response): Promise<void> {
+    try {
+      const { email, password } = req.body;
+
+      const { error } = userEmailSchema.validate(email);
+      if (error) {
+        res.status(400).json({
+          success: false,
+          error: 'Invalid email',
+        });
+        return;
+      }
+      
+      const response = await combinedService.login(email, password);
+      
+      res.status(response.success ? 200 : 401).json(response);
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Internal Server Error',
+      });
+    }
+  }
+
   async getUsersWithUnits(req: Request, res: Response): Promise<void> {
     try {
       const response = await combinedService.getUsersWithUnits();

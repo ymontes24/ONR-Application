@@ -52,8 +52,7 @@ UserAssociation.init(
   }
 );
 
-// Establecer relaciones para la tabla de unión
-User.belongsToMany(Association, { through: UserAssociation, foreignKey: 'user_id', otherKey: 'association_id', as: 'associations' });
-Association.belongsToMany(User, { through: UserAssociation, foreignKey: 'association_id', otherKey: 'user_id', as: 'users' });
+User.belongsToMany(Association, { through: UserAssociation, foreignKey: 'user_id', otherKey: 'association_id', as: 'associations', onDelete: 'CASCADE' });
+Association.belongsToMany(User, { through: UserAssociation, foreignKey: 'association_id', otherKey: 'user_id', as: 'users', onDelete: 'CASCADE' });
 
 export default UserAssociation;

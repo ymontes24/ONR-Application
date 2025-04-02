@@ -42,7 +42,7 @@ Unit.init(
 );
 
 
-Unit.belongsTo(Association, { foreignKey: 'association_id', as: 'association' });
-Association.hasMany(Unit, { foreignKey: 'association_id', as: 'units' });
+Unit.belongsTo(Association, { foreignKey: 'association_id', as: 'association', onDelete: 'CASCADE' });
+Association.hasMany(Unit, { foreignKey: 'association_id', as: 'units', onDelete: 'CASCADE' });
 
 export default Unit;

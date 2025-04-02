@@ -5,8 +5,73 @@ import mongoBookingService from '../../mongo/services/booking.service';
 import { Types } from 'mongoose';
 import { createBooking, ServiceResponse } from '../interfaces/services.interfaces';
 import { UserAttributes } from '../../postgres/interfaces/postgres.interfaces';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
+const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 
 export class CombinedService {
+
+  async login(email: string, password: string): Promise<ServiceResponse<any>> {
+    try {
+      const mongoUserResponse = await mongoUserService.getUserByEmailInternal(email);
+      let mongoUser = null;
+      
+      if (mongoUserResponse.success && mongoUserResponse.data) {
+        const user = mongoUserResponse.data;
+        mongoUser = {
+          email: user.email,
+          password: user.password,
+        };
+      }
+      
+      const pgUserResponse = await pgUserService.getUserByEmailInternal(email);
+      let pgUser = null;
+      
+      if (pgUserResponse.success && pgUserResponse.data) {
+        const user = pgUserResponse.data as any;
+        pgUser = {
+          email: user.email,
+          password: user.password,
+        };
+      }
+
+      if (!mongoUser && !pgUser) {
+        return {
+          success: false,
+          error: 'User not found in any database',
+        };
+      }
+
+      const validatePasswords = await bcrypt.compare(password, pgUser?.password || mongoUser?.password || ''); 
+
+      if (!validatePasswords) {
+        return {
+          success: false,
+          error: 'Incorrect password',
+        };
+      }
+
+      const token = jwt.sign({ pgUser, mongoUser }, JWT_SECRET, {
+        expiresIn: '24h',
+      });
+      
+      return {
+        success: true,
+        data: {
+          token,
+        },
+        message: 'Login successful',
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Internal server error',
+      };
+    }
+  }
 
   async getUsersWithUnits(): Promise<ServiceResponse<any>> {
     try {

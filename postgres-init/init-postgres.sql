@@ -14,7 +14,7 @@ CREATE TABLE units (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     association_id INTEGER NOT NULL,
-    FOREIGN KEY (association_id) REFERENCES associations(id),
+    FOREIGN KEY (association_id) REFERENCES associations(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -36,8 +36,8 @@ CREATE TABLE user_units (
     user_id INTEGER NOT NULL,
     unit_id INTEGER NOT NULL,
     role VARCHAR(50) NOT NULL, -- 'owner' o 'resident'
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (unit_id) REFERENCES units(id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (unit_id) REFERENCES units(id) ON DELETE CASCADE,
     UNIQUE (user_id, unit_id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -48,8 +48,8 @@ CREATE TABLE user_associations (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     association_id INTEGER NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (association_id) REFERENCES associations(id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (association_id) REFERENCES associations(id) ON DELETE CASCADE,
     UNIQUE (user_id, association_id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

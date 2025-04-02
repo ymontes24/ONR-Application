@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import combinedController from '../controller/common.controller';
+import { authMiddleware } from '../middlewares/auth.middleware';
 
 const router = Router();
 
@@ -72,8 +73,39 @@ const router = Router();
  *         timeEnd:
  *           type: string
  *           description: End time of the booking (format HH:MM)
+ *     loginRequest:
+ *       type: object
+ *       required:
+ *         - email
+ *         - password
+ *       properties:
+ *         email:
+ *           type: string
+ *           format: email
+ *           description: User's email address
+ *         password:
+ *           type: string
+ *           description: User's password
  *
  * paths:
+ *   /api/combined/login:
+ *     post:
+ *       tags:
+ *         - Combined Database API
+ *       summary: Login user
+ *       description: Logs in a user from either MongoDB or PostgreSQL database
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/loginRequest'
+ *       responses:
+ *         200:
+ *           description: Successful operation
+ *         401:
+ *           description: Unauthorized
+ * 
  *   /api/combined/users:
  *     get:
  *       tags:
@@ -164,9 +196,10 @@ const router = Router();
  *         500:
  *           description: Server error
  */
+router.post('/login', combinedController.login);
 router.get('/users', combinedController.getUsersWithUnits);
 router.get('/users/id/:id', combinedController.getUserWithUnitsById);
 router.get('/users/email/:email', combinedController.getUserWithUnitsByEmail);
-router.post('/booking/:pgUserId/:amenityId', combinedController.bookAmenityForPostgresUser);
+router.post('/booking/:pgUserId/:amenityId', authMiddleware, combinedController.bookAmenityForPostgresUser);
 
 export default router;

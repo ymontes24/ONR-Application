@@ -15,10 +15,16 @@ const options = {
                 url: 'http://localhost:3000',
             },
         ],
-        underscored: false,
-    },
-    jsonOptions: {
-        preservePropertyNames: true
+        components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: 'http',
+                    scheme: 'bearer',
+                    bearerFormat: 'JWT',
+                },
+            },
+        },
+        security: [{ bearerAuth: [] }], 
     },
     apis: [
         path.join(__dirname, '../API/common/routes/*.ts'),
