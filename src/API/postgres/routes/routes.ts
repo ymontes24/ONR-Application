@@ -2,6 +2,7 @@ import { Router } from 'express';
 import userController from '../controllers/user.controller';
 import associationController from '../controllers/association.controller';
 import unitController from '../controllers/unit.controller';
+import { authMiddleware } from '../../common/middlewares/auth.middleware';
 
 const router = Router();
 
@@ -331,12 +332,12 @@ const router = Router();
 router.get('/users', userController.getAllUsers);
 router.get('/users/:id', userController.getUserById);
 router.post('/users', userController.createUser);
-router.put('/users/:id', userController.updateUser);
-router.delete('/users/:id', userController.deleteUser);
+router.put('/users/:id', authMiddleware, userController.updateUser);
+router.delete('/users/:id', authMiddleware, userController.deleteUser);
 router.get('/users/association/:associationId', userController.getUsersByAssociation);
 router.get('/users/email/:email', userController.getUserByEmail);
-router.post('/users/units/:userId/:unitId', userController.assignUnitToUser);
-router.delete('/users/units/:userId/:unitId', userController.removeUnitFromUser);
+router.post('/users/units/:userId/:unitId', authMiddleware, userController.assignUnitToUser);
+router.delete('/users/units/:userId/:unitId', authMiddleware, userController.removeUnitFromUser);
 
 /**
  * @swagger
@@ -567,9 +568,9 @@ router.delete('/users/units/:userId/:unitId', userController.removeUnitFromUser)
  */
 router.get('/associations', associationController.getAllAssociations);
 router.get('/associations/:id', associationController.getAssociationById);
-router.post('/associations', associationController.createAssociation);
-router.put('/associations/:id', associationController.updateAssociation);
-router.delete('/associations/:id', associationController.deleteAssociation);
+router.post('/associations', authMiddleware, associationController.createAssociation);
+router.put('/associations/:id', authMiddleware, associationController.updateAssociation);
+router.delete('/associations/:id', authMiddleware, associationController.deleteAssociation);
 router.get('/associations/:associationId/users', associationController.getUsersFromAssociation);
 router.get('/associations/:associationId/units', associationController.getUnitsFromAssociation);
 
@@ -796,9 +797,9 @@ router.get('/associations/:associationId/units', associationController.getUnitsF
  */
 router.get('/units', unitController.getAllUnits);
 router.get('/units/:id', unitController.getUnitById);
-router.post('/units', unitController.createUnit);
-router.put('/units/:id', unitController.updateUnit);
-router.delete('/units/:id', unitController.deleteUnit);
+router.post('/units', authMiddleware, unitController.createUnit);
+router.put('/units/:id', authMiddleware, unitController.updateUnit);
+router.delete('/units/:id', authMiddleware, unitController.deleteUnit);
 router.get('/units/association/:associationId', unitController.getUnitsByAssociation);
 router.get('/units/:unitId/users', unitController.getUsersFromUnit);
 

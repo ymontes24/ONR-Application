@@ -371,6 +371,32 @@ export class PostgresUserService {
       };
     }
   }
+
+  async getUserByEmailInternal(email: string): Promise<ServiceResponse<UserAttributes>> {
+    try {
+      const user = await User.findOne({
+        where: { email },
+        attributes: { exclude: ['createdAt', 'updatedAt'] },
+      });
+
+      if (!user) {
+        return {
+          success: false,
+          error: 'User not found',
+        };
+      }
+
+      return {
+        success: true,
+        data: user,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Internal server error',
+      };
+    }
+  }
 }
 
 export default new PostgresUserService();

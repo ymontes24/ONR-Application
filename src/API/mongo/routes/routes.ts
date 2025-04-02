@@ -4,6 +4,7 @@ import associationController from '../controllers/association.controller';
 import unitController from '../controllers/unit.controller';
 import amenityController from '../controllers/amenity.controller';
 import bookingController from '../controllers/booking.controller';
+import { authMiddleware } from '../../common/middlewares/auth.middleware';
 
 const router = Router();
 
@@ -289,8 +290,8 @@ const router = Router();
 router.get('/users', userController.getAllUsers);
 router.get('/users/:id', userController.getUserById);
 router.post('/users', userController.createUser);
-router.put('/users/:id', userController.updateUser);
-router.delete('/users/:id', userController.deleteUser);
+router.put('/users/:id', authMiddleware, userController.updateUser);
+router.delete('/users/:id', authMiddleware, userController.deleteUser);
 router.get('/users/association/:associationId', userController.getUsersByAssociation);
 router.get('/users/unit/:unitId', userController.getUsersByUnit);
 
@@ -455,9 +456,9 @@ router.get('/users/unit/:unitId', userController.getUsersByUnit);
  */
 router.get('/associations', associationController.getAllAssociations);
 router.get('/associations/:id', associationController.getAssociationById);
-router.post('/associations', associationController.createAssociation);
-router.put('/associations/:id', associationController.updateAssociation);
-router.delete('/associations/:id', associationController.deleteAssociation);
+router.post('/associations', authMiddleware, associationController.createAssociation);
+router.put('/associations/:id', authMiddleware, associationController.updateAssociation);
+router.delete('/associations/:id', authMiddleware, associationController.deleteAssociation);
 
 /**
  * @swagger
@@ -655,9 +656,9 @@ router.delete('/associations/:id', associationController.deleteAssociation);
  */
 router.get('/units', unitController.getAllUnits);
 router.get('/units/:id', unitController.getUnitById);
-router.post('/units', unitController.createUnit);
-router.put('/units/:id', unitController.updateUnit);
-router.delete('/units/:id', unitController.deleteUnit);
+router.post('/units', authMiddleware, unitController.createUnit);
+router.put('/units/:id', authMiddleware, unitController.updateUnit);
+router.delete('/units/:id', authMiddleware, unitController.deleteUnit);
 router.get('/units/association/:associationId', unitController.getUnitsByAssociation);
 
 /**
@@ -882,9 +883,9 @@ router.get('/units/association/:associationId', unitController.getUnitsByAssocia
  */
 router.get('/amenities', amenityController.getAllAmenities);
 router.get('/amenities/:id', amenityController.getAmenityById);
-router.post('/amenities', amenityController.createAmenity);
-router.put('/amenities/:id', amenityController.updateAmenity);
-router.delete('/amenities/:id', amenityController.deleteAmenity);
+router.post('/amenities', authMiddleware, amenityController.createAmenity);
+router.put('/amenities/:id', authMiddleware, amenityController.updateAmenity);
+router.delete('/amenities/:id', authMiddleware, amenityController.deleteAmenity);
 router.get('/amenities/association/:associationId', amenityController.getAmenitiesByAssociation);
 
 /**
@@ -1150,9 +1151,9 @@ router.get('/amenities/association/:associationId', amenityController.getAmeniti
  */
 router.get('/bookings', bookingController.getAllBookings);
 router.get('/bookings/:id', bookingController.getBookingById);
-router.post('/bookings', bookingController.createBooking);
-router.put('/bookings/:id', bookingController.updateBooking);
-router.delete('/bookings/:id', bookingController.deleteBooking);
+router.post('/bookings', authMiddleware, bookingController.createBooking);
+router.put('/bookings/:id', authMiddleware, bookingController.updateBooking);
+router.delete('/bookings/:id', authMiddleware, bookingController.deleteBooking);
 router.get('/bookings/association/:associationId', bookingController.getBookingsByAssociation);
 router.get('/bookings/user/:userId', bookingController.getBookingsByUser);
 

@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs';
 import { User } from '../models';
 import { IUser } from '../interfaces/mongodb.interfaces';
 import { ServiceResponse, PaginationOptions, PaginatedResponse, AssociationFilter, UnitFilter } from '../../common/interfaces/services.interfaces';
@@ -91,6 +92,29 @@ export class MongoUserService {
 
   async createUser(userData: Partial<IUser>): Promise<ServiceResponse<IUser>> {
     try {
+      const newUser = new User(userData);
+      await newUser.save();
+
+      const userResponse = newUser.toObject();
+
+      return {
+        success: true,
+        data: userResponse as IUser,
+        message: 'User created successfully',
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Internal server error',
+      };
+    }
+  }
+
+  async createUserLogin(userData: IUser): Promise<ServiceResponse<IUser>> {
+    try {
+      const salt = bcrypt.genSaltSync(10);
+      userData.password = bcrypt.hashSync(userData.password, salt);
+      
       const newUser = new User(userData);
       await newUser.save();
 
@@ -248,6 +272,30 @@ export class MongoUserService {
           totalPages: Math.ceil(total / limit),
         },
       };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Internal server error',
+      };
+    }
+  }
+
+  async getUserByEmailInternal(email: string): Promise<ServiceResponse<IUser>> {
+    try{
+      const user = await User.findOne({ email });
+
+      if (!user) {
+        return {
+          success: false,
+          error: 'User not found',
+        };
+      }
+
+      return {
+        success: true,
+        data: user,
+      };
+
     } catch (error) {
       return {
         success: false,

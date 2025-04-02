@@ -57,8 +57,7 @@ UserUnit.init(
   }
 );
 
-// Establecer relaciones para la tabla de unión
-User.belongsToMany(Unit, { through: UserUnit, foreignKey: 'user_id', otherKey: 'unit_id', as: 'units' });
-Unit.belongsToMany(User, { through: UserUnit, foreignKey: 'unit_id', otherKey: 'user_id', as: 'users' });
+User.belongsToMany(Unit, { through: UserUnit, foreignKey: 'user_id', otherKey: 'unit_id', as: 'units', onDelete: 'CASCADE' });
+Unit.belongsToMany(User, { through: UserUnit, foreignKey: 'unit_id', otherKey: 'user_id', as: 'users', onDelete: 'CASCADE' });
 
 export default UserUnit;
